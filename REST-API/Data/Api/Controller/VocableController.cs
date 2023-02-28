@@ -53,9 +53,8 @@ public class VocableController : BaseController<DataContext, VocableController>
 
 
         Context.Vocables.Update(vocable);
-        await Context.SaveChangesAsync();
-        return Ok(new VocableCollectionGetDto(vocable.Collection.Id, vocable.Collection.Name,
-            vocable.Collection.Vocables.Select(it => new VocableGetDto(it.Id, it.Display, it.PossibleAnswers))));
+
+        return await SaveAndGet(vocable);
     }
 
     [HttpDelete]
@@ -69,8 +68,13 @@ public class VocableController : BaseController<DataContext, VocableController>
             return Unauthorized();
 
         Context.Vocables.Remove(vocable);
-        await Context.SaveChangesAsync();
 
+        return await SaveAndGet(vocable);
+    }
+
+    public async Task<ActionResult<VocableCollectionGetDto>> SaveAndGet(Vocable vocable)
+    {
+        await Context.SaveChangesAsync();
         return Ok(new VocableCollectionGetDto(vocable.Collection.Id, vocable.Collection.Name,
             vocable.Collection.Vocables.Select(it => new VocableGetDto(it.Id, it.Display, it.PossibleAnswers))));
     }
