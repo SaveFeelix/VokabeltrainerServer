@@ -54,7 +54,6 @@ public class VocableController : BaseController<DataContext, VocableController>
 
         Context.Vocables.Update(vocable);
         await Context.SaveChangesAsync();
-
         return Ok(new VocableCollectionGetDto(vocable.Collection.Id, vocable.Collection.Name,
             vocable.Collection.Vocables.Select(it => new VocableGetDto(it.Id, it.Display, it.PossibleAnswers))));
     }
