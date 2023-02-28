@@ -1,0 +1,34 @@
+services:
+  database:
+    restart: always
+    image: mariadb:latest
+    container_name: Database
+    volumes:
+      - database-data:/var/lib/mysql
+      - database-config:/etc/mysql/conf.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=abc
+  server:
+    build: ./REST-API/
+    restart: always
+    ports:
+      - 5432:5432
+    depends_on:
+      database:
+        condition: service_started
+    environment:
+      - APP_PORT=5432
+      - JWT_TOKEN=12345678910121314
+      - JWT_EXPIRE=8
+      - DB_DATABASE=Berufsschule-Vokabeltrainer
+      - DB_USER=root
+      - DB_PORT=3306
+      - DB_HOST=database
+      - DB_PASSWORD=abc
+    links:
+      - database
+
+
+volumes:
+  database-config:
+  database-data:
