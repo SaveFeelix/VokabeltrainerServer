@@ -36,4 +36,14 @@ jobs:
         run: dotnet build --no-restore
       - name: Test
         run: dotnet test --no-restore
+  docker:
+    needs: [ server ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Build the Docker image
+        run: docker build . --file ./REST-API/Dockerfile
       
