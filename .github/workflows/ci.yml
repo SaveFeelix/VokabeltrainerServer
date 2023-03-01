@@ -1,0 +1,39 @@
+name: ""
+
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+
+
+jobs:
+  server:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.x'
+      - name: Cache
+        id: cache-dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.nuget/packages
+            !~/.nuget/packages/unwanted
+          key: server-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+      - name: Restore
+        if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        run: dotnet restore
+
+      - name: Build
+        runs: dotnet build --no-restore
+      - name: Test
+        run: dotnet test --no-restore
+      
