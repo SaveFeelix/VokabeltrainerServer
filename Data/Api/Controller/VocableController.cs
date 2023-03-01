@@ -72,7 +72,7 @@ public class VocableController : BaseController<DataContext, VocableController>
         return await SaveAndGet(vocable);
     }
 
-    public async Task<ActionResult<VocableCollectionGetDto>> SaveAndGet(Vocable vocable)
+    private async Task<ActionResult<VocableCollectionGetDto>> SaveAndGet(Vocable vocable)
     {
         await Context.SaveChangesAsync();
         return Ok(new VocableCollectionGetDto(vocable.Collection.Id, vocable.Collection.Name,

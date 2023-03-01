@@ -7,9 +7,10 @@ services:
       - database-data:/var/lib/mysql
       - database-config:/etc/mysql/conf.d
     environment:
-      - MYSQL_ROOT_PASSWORD=abc
+      - MARIADB_ROOT_PASSWORD=abc
   server:
-    build: ./REST-API/
+    container_name: REST-API
+    build: .
     restart: always
     ports:
       - 5432:5432
@@ -17,12 +18,8 @@ services:
       database:
         condition: service_started
     environment:
-      - APP_PORT=5432
-      - JWT_TOKEN=12345678910121314
+      - JWT_TOKEN=yourSecretTokenWithSpecificLength
       - JWT_EXPIRE=8
-      - DB_DATABASE=Berufsschule-Vokabeltrainer
-      - DB_USER=root
-      - DB_PORT=3306
       - DB_HOST=database
       - DB_PASSWORD=abc
     links:

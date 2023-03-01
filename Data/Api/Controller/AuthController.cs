@@ -35,7 +35,8 @@ public class AuthController : ControllerBase
                 UserName = registerDto.UserName,
                 Email = registerDto.Email
             };
-            await user.GeneratePassword(registerDto.Password);
+            if (!await user.GeneratePassword(registerDto.Password))
+                return Problem();
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
         }

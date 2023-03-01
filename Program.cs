@@ -15,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 #if DEBUG
 JwtSettings jwtSettings = new JwtSettings("12345678910111213", 8);
 #else
-var token = Environment.GetEnvironmentVariable("JWT_TOKEN");
+var token = Environment.GetEnvironmentVariable("JWT_TOKEN") ?? "yourSecureTokenWithSpecificLength";
 if (string.IsNullOrEmpty(token))
     return;
 if (!long.TryParse(Environment.GetEnvironmentVariable("JWT_EXPIRE"), out var result))
@@ -34,9 +34,9 @@ builder.Services.AddDbContext<DataContext>(options =>
 #else
     MySqlConnectionStringBuilder dbBuilder = new()
     {
-        Database = Environment.GetEnvironmentVariable("DB_DATABASE") ?? "Vokabeltrainer-Berufsschule",
-        UserID = Environment.GetEnvironmentVariable("DB_USER") ?? "root",
-        Port = uint.TryParse(Environment.GetEnvironmentVariable("DB_PORT"), out var port) ? port : 3306,
+        Database = "Vokabeltrainer-Berufsschule",
+        UserID = "root",
+        Port = 3306,
         Server = Environment.GetEnvironmentVariable("DB_HOST"),
         Password = Environment.GetEnvironmentVariable("DB_PASSWORD"),
         ApplicationName = "Berufsschule-Vokabeltrainer",
@@ -108,8 +108,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-var applicationPort = uint.TryParse(Environment.GetEnvironmentVariable("APP_PORT"), out var appPort) ? appPort : 5432;
 var host = Dns.GetHostEntry(Dns.GetHostName());
 var address = host.AddressList.FirstOrDefault(it => it.AddressFamily == AddressFamily.InterNetwork);
 
-app.Run($"http://{address}:{applicationPort}");
+app.Run($"http://{address}:5432");

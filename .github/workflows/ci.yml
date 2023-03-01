@@ -32,5 +32,5 @@ jobs:
         with:
           fetch-depth: 0
       - name: Build the Docker image
-        run: cd REST-API && docker build . --file ./Dockerfile
+        run: docker build .
       
