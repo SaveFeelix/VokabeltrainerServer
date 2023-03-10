@@ -1,4 +1,4 @@
-name: ""
+name: "Custom CI"
 
 on:
   pull_request:
