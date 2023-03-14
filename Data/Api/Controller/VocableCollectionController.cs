@@ -52,11 +52,8 @@ public class VocableCollectionController : BaseController<DataContext, VocableCo
             Vocables = new List<Vocable>()
         };
         await Context.VocableCollections.AddAsync(collection);
-        await Context.SaveChangesAsync();
 
-
-        return Ok(new VocableCollectionGetDto(collection.Id, collection.Name,
-            collection.Vocables.Select(it => new VocableGetDto(it.Id, it.Display, it.PossibleAnswers))));
+        return await GenerateResult(collection);
     }
 
     [HttpPut]
@@ -76,10 +73,7 @@ public class VocableCollectionController : BaseController<DataContext, VocableCo
             return Unauthorized();
         collection.Name = updateDto.Name;
         Context.VocableCollections.Update(collection);
-        await Context.SaveChangesAsync();
-
-        return Ok(new VocableCollectionGetDto(collection.Id, collection.Name,
-            collection.Vocables.Select(it => new VocableGetDto(it.Id, it.Display, it.PossibleAnswers))));
+        return await GenerateResult(collection);
     }
 
     [HttpDelete]
@@ -108,5 +102,16 @@ public class VocableCollectionController : BaseController<DataContext, VocableCo
                 .Where(it => it.Owner == user)
                 .FirstOrDefaultAsync(it => it.Name.ToLower() == displayName.ToLower());
         return collection is not null;
+    }
+    
+    
+
+    private async Task<ActionResult<VocableCollectionGetDto>> GenerateResult(VocableCollection collection)
+    {
+        await Context.SaveChangesAsync();
+
+
+        return Ok(new VocableCollectionGetDto(collection.Id, collection.Name,
+            collection.Vocables.Select(it => new VocableGetDto(it.Id, it.Display, it.PossibleAnswers))));
     }
 }
