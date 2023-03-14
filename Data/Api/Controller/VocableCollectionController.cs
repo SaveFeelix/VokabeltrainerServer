@@ -103,8 +103,7 @@ public class VocableCollectionController : BaseController<DataContext, VocableCo
                 .FirstOrDefaultAsync(it => it.Name.ToLower() == displayName.ToLower());
         return collection is not null;
     }
-    
-    
+
 
     private async Task<ActionResult<VocableCollectionGetDto>> GenerateResult(VocableCollection collection)
     {
